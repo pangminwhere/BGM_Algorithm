@@ -1,91 +1,74 @@
 import java.util.*;
 
 class Solution {
-    
-    static final int[] D_X = {-1, 0, 1, 0}; // x 이동 좌표
-    static final int[] D_Y = {0, -1, 0, 1}; // y 이동 좌표
-    
-    int eX; // 도착지 x좌표
-    int eY; // 도착지 y좌표
-    
-    public int solution(String[] maps) {        
-        int sX = 0, sY = 0, lX = 0, lY = 0; // s는 출발지 좌표, l은 레버 좌표
-        
-        for (int i = 0; i < maps.length; i++) {
-            for (int j = 0; j < maps[0].length(); j++) {
-                if (maps[i].charAt(j) == 'S') {
-                    sX = i;
-                    sY = j;
-                } else if (maps[i].charAt(j) == 'E') {
-                    eX = i;
-                    eY = j;
-                } else if (maps[i].charAt(j) == 'L') {
-                    lX = i;
-                    lY = j;
+    public int solution(String[] maps) {
+        //✅ 주어진 입력을 사용하기 좋게 전처리한다.
+        int n = maps.length;
+        int m = maps[0].length();
+        char[][] maze = new char[n][m];
+        int[] start = new int[2];
+        int[] lever = new int[2];
+        int[] exit = new int[2];
+
+        for (int r = 0; r < n; r++) {
+            maze[r] = maps[r].toCharArray();
+            for (int c = 0; c < m; c++) {
+                if (maze[r][c] == 'S') {
+                    start[0] = r;
+                    start[1] = c;
+                } else if (maze[r][c] == 'L') {
+                    lever[0] = r;
+                    lever[1] = c;
+                } else if (maze[r][c] == 'E') {
+                    exit[0] = r;
+                    exit[1] = c;
                 }
-            }
-        }
-        
-        boolean[][] visited = new boolean[maps.length][maps[0].length()]; // 방문여부
-        
-        int step = bfs(new Node(sX, sY, 0), lX, lY, maps, visited, false);  // bfs로 먼저 시작점 -> 레버의 최단 거리 
-        if (step == -1) return -1; // 만약 갈 수 없는 경우
-        
-        int sToE = bfs(new Node(sX, sY, step * 2), eX, eY, maps, visited, true);  // 시작점 -> 레버 -> 시작점 -> 도착점   
-        int lToE = bfs(new Node(lX, lY, step), eX, eY, maps, visited, true);   // 시작점 -> 레버 -> 도착점
-        
-        if (lToE == -1) return sToE;
-        else if (sToE == -1) return lToE;
-        return Math.min(lToE, sToE);
-    }
-    
-    private int bfs(Node node, int eX, int eY, String[] maps, boolean[][] visited, boolean refresh) {
-        Queue<Node> queue = new ArrayDeque<>(); // bfs를 위한 queue
-        queue.add(node); 
-        
-        if (refresh) {
-            for (int i = 0; i < visited.length; i++) {
-                for (int j = 0; j < visited[i].length; j++)
-                    visited[i][j] = false; // 방문 여부 초기화
             }
         }
 
-        while(!queue.isEmpty()) {
-            
-            Node n = queue.poll(); // 큐에서 꺼내기
-            
-            if (n.x == eX && n.y == eY) return n.step; // 최단 거리 리턴
-            if (visited[n.x][n.y]) continue; // 방문한 경우 패스
-            
-            visited[n.x][n.y] = true; // 방문 여부 설정
-            
-            for (int k = 0; k < 4; k++) {
-                int newX = n.x + D_X[k]; // 새로운 좌표 설정
-                int newY = n.y + D_Y[k];
+        //✅ 시작 지점 -> 레버까지 최단거리를 구한다. 
+        int toLever = bfs(maze, start, lever, n, m);
+      	//✅ 경로가 없다면 -1을 반환한다.
+        if (toLever == -1) return -1;
+        
+        //✅ 레버 -> 출구까지 최단거리를 구한다. 
+        int toExit = bfs(maze, lever, exit, n, m);
+      	//✅ 경로가 없다면 -1을 반환한다.
+        if (toExit == -1) return -1;
+        
+        //✅ 두 개의 최단거리를 더한 값을 반환한다.
+        return toLever + toExit;
+    }
+
+    private int bfs(char[][] maze, int[] start, int[] target, int n, int m) {
+        boolean[][] visited = new boolean[n][m];
+        int[] dr = {0, 0, -1, 1};
+        int[] dc = {-1, 1, 0, 0};
+
+        Queue<int[]> queue = new ArrayDeque<>();
+        queue.add(new int[]{start[0], start[1], 0}); // 위치와 현재까지의 거리를 함께 저장
+        visited[start[0]][start[1]] = true;
+
+        while (!queue.isEmpty()) {
+            int[] current = queue.remove();
+            int r = current[0];
+            int c = current[1];
+            int distance = current[2];
+
+            for (int d = 0; d < 4; d++) {
+                int nr = r + dr[d];
+                int nc = c + dc[d];
                 
-                if (validRange(newX, newY, maps, visited)) {
-                    queue.add(new Node(newX, newY, n.step + 1));
+                if (nr >= 0 && nc >= 0 && nr < n && nc < m && maze[nr][nc] != 'X') {
+                    if (!visited[nr][nc]) {
+                        if (nr == target[0] && nc == target[1]) return distance + 1;
+                        
+                        queue.offer(new int[]{nr, nc, distance + 1});
+                        visited[nr][nc] = true;
+                    }
                 }
             }
         }
-        return -1;
-    }
-    
-    // 방문한 경우가 아니고 유효한 인덱스 && 지나갈 수 있는 경로일 경우
-    private boolean validRange(int x, int y, String[] maps, boolean[][] visited) {
-        return x >= 0 && y >= 0 && x < maps.length && y < maps[x].length()
-            && !visited[x][y] && (maps[x].charAt(y) != 'X');
-    }
-    
-    class Node {
-        int x;
-        int y;
-        int step;
-        
-        Node (int x, int y, int step) {
-            this.x = x;
-            this.y = y;
-            this.step = step;
-        }
+        return -1; // 목표 지점에 도달할 수 없는 경우
     }
 }
