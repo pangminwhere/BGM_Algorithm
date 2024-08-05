@@ -1,28 +1,20 @@
+import java.util.*;
+
 class Solution {
-    int tmpTarget;
-    boolean[] visited;
-    int[] dx = {-1, 1};
-    int answer;
-    void dfs(int [] numbers,int curr, int depth){
-        if(depth == numbers.length && curr == tmpTarget){
-            answer++;
-            return;
-        } else if (depth == numbers.length){
-            return;
-        }
-    
-        visited[depth] = true;
-        for(int i = 0; i<dx.length; i++){
-            int newValue = curr + numbers[depth]*dx[i];
-            dfs(numbers, newValue, depth+1);
-        }
-        visited[depth] = false;
-    }
     public int solution(int[] numbers, int target) {
-        answer = 0;
-        tmpTarget = target;
-        visited = new boolean[numbers.length];
-        dfs(numbers, 0, 0);
-        return answer;
+		    //✅ DFS 탐색을 통해 합이 target이 되는 경우의 수를 구한다.
+        return dfs(numbers, 0, target, 0);
+    }
+    
+    int dfs(int[] numbers, int index, int target, int cur) {
+        if (index == numbers.length) {
+            return (cur == target) ? 1 : 0;
+        }
+        
+        int sum = 0;
+        sum += dfs(numbers, index + 1, target, cur + numbers[index]);
+        sum += dfs(numbers, index + 1, target, cur - numbers[index]);
+        
+        return sum;
     }
 }
