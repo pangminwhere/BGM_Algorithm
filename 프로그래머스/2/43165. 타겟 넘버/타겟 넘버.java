@@ -7,7 +7,7 @@ class Solution {
     
     int dfs(int[] numbers, int index, int target, int curr) {
         if (index == numbers.length) {
-            return (curr == target) ? 1 : 0;
+            return (target == curr) ? 1 : 0;
         }
         
         int sum = 0;
