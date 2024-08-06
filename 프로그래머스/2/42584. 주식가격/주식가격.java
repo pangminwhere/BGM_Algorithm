@@ -1,9 +1,8 @@
 import java.util.*;
-
 class Solution {
-    public static int[] solution(int[] prices) {
+    public int[] solution(int[] prices) {
         int[] answer = new int[prices.length];
-        Queue<Integer> q = new LinkedList<>();
+        Queue<Integer> q = new ArrayDeque<>();
         
         for (int i : prices) {
             q.add(i);
