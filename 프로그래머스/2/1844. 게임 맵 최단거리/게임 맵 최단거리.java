@@ -2,22 +2,21 @@ import java.util.*;
 
 class Solution {
     public int solution(int[][] maps) {
-        int answer = 0;
         int n = maps.length;
         int m = maps[0].length;
-        boolean[][] visited = new boolean[n][m];
         int[] dr = {0, 1, 0, -1};
         int[] dc = {1, 0, -1, 0};
+        boolean[][] visited = new boolean[n][m];
         
         Queue<int[]> queue = new LinkedList<>();
-        queue.add(new int[] {0, 0, 1});
+        queue.add(new int[]{0, 0, 1});
         visited[0][0] = true;
         
         while (!queue.isEmpty()) {
             int[] curr = queue.remove();
             int r = curr[0], c = curr[1], dist = curr[2];
             
-            if (r == n - 1 && c == m - 1) {
+            if (r == n - 1 && c == m -1) {
                 return dist;
             }
             
@@ -31,7 +30,6 @@ class Solution {
                     queue.add(new int[] {nr, nc, dist + 1});
                 }
             }
-            
         }
         return -1;
     }
