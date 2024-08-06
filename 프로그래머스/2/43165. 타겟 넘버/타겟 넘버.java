@@ -1,5 +1,3 @@
-import java.util.*;
-
 class Solution {
     public int solution(int[] numbers, int target) {
         return dfs(numbers, 0, target, 0);
