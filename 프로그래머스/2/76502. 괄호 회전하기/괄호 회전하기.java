@@ -4,36 +4,33 @@ class Solution {
     public int solution(String s) {
         int answer = 0;
         String extendedS = s + s;
+        
         for (int i = 0; i < s.length(); i++) {
-            if (isValid(extendedS.substring(i, s.length() + i))) {
-                answer++;
-            }
+            if (isValid(extendedS.substring(i, s.length() + i))) answer++;
         }
         return answer;
     }
     
     public boolean isValid(String s) {
-        Deque<Character> stack = new ArrayDeque<Character>();
+        Deque<Character> queue = new ArrayDeque<>();
         
-        for (char current : s.toCharArray()) {
-            if (current == '(' || current == '{' || current == '[') {
-                stack.push(current);
+        for (char curr : s.toCharArray()) {
+            if (curr == '(' || curr == '{' || curr == '[') {
+                queue.push(curr);
             } else {
-                if (stack.isEmpty()) {
+                if (queue.isEmpty()) {
                     return false;
                 }
                 
-                char target = stack.pop();
+                char target = queue.pop();
                 
-                if (target == '(' && current != ')' ||
-                   target == '{' && current != '}' ||
-                   target == '[' && current != ']') {
+                if ((target == '(' && curr != ')') ||
+                   (target == '{' && curr != '}') ||
+                   (target == '[' && curr != ']')) {
                     return false;
                 }
-                
             }
         }
-        
-        return stack.isEmpty();
+        return queue.isEmpty();
     }
 }
