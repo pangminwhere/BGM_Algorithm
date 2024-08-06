@@ -10,17 +10,16 @@ class Solution {
         }
         
         int index = 0;
-        
         while (!q.isEmpty()) {
-            int currentPrice = q.poll();
+            int curr = q.poll();
             
             for (int i = (prices.length - q.size()); i < prices.length; i++) {
-                if (currentPrice > prices[i]) {
+                if (curr > prices[i]) {
                     answer[index]++;
                     break;
                 }
                 
-                if (currentPrice <= prices[i]) {
+                if (curr <= prices[i]) {
                     answer[index]++;
                 }
             }
