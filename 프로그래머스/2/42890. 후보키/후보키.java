@@ -1,66 +1,63 @@
 import java.util.*;
 
 class Solution {
-    List<String> candi = new ArrayList<>();
-
     public int solution(String[][] relation) {
-        int answer = 0;
-
-        for (int i = 0; i < relation[0].length; i++) {
-            boolean[] visited = new boolean[relation[0].length];
-            dfs(visited, 0, 0, i + 1, relation);
+        int colSize = relation[0].length;
+        
+        List<Set<Integer>> candidates = new ArrayList<>();
+        
+        for (int size = 1; size <= colSize; size++) {
+            List<Set<Integer>> combinations = generateCombinations(colSize, size);
+            for (Set<Integer> comb : combinations) {
+                if (checkUnique(comb, relation) && checkMin(comb, candidates)) {
+                    candidates.add(comb);
+                }
+            }
         }
-        answer = candi.size();
-        return answer;
+        return candidates.size();
     }
-
-    public void dfs(boolean[] visited, int start, int depth, int end, String[][] relation) {
-        if (depth == end) {
-            List<Integer> list = new ArrayList<>();
-            String key = "";
-            for (int i = 0; i < visited.length; i++) {
-                if (visited[i]) {
-                    key += String.valueOf(i);
-                    list.add(i);
-                }
+    
+    private boolean checkUnique(Set<Integer> cols, String[][] relation) {
+        int rowSize = relation.length;
+        Set<String> rowSet = new HashSet<>();
+        for (String[] row : relation) {
+            StringBuilder rowStr = new StringBuilder();
+            for (int col : cols) {
+                rowStr.append(row[col]);
             }
-
-            Map<String, Integer> map = new HashMap<>();
-
-            for (int i = 0; i < relation.length; i++) {
-                String s = "";
-                for (Integer j : list) {
-                    s += relation[i][j];
-                }
-
-                if (map.containsKey(s)) {
-                    return;
-                } else {
-                    map.put(s, 0);
-                }
+            rowSet.add(rowStr.toString());
+        }
+        if (rowSet.size() == rowSize) {
+            return true;
+        }
+        return false;
+    }
+    
+    private boolean checkMin(Set<Integer> cand, List<Set<Integer>> candKeys) {
+        for (Set<Integer> key : candKeys) {
+            if (cand.containsAll(key)) {
+                return false;
             }
-
-            // 후보키 추가
-            for (String s : candi) { 
-                int count = 0;
-                for(int i = 0; i < key.length(); i++){
-                    String subS = String.valueOf(key.charAt(i));
-                    if(s.contains(subS)) count++;
-                }
-                if (count == s.length()) return;
-            }
-            candi.add(key);
-
+        }
+        return true;
+    }
+    
+    private List<Set<Integer>> generateCombinations(int n, int r) {
+        List<Set<Integer>> combinations = new ArrayList<>();
+        generateCombinationsHelper(new HashSet<>(), 0, n, r, combinations);
+        return combinations;
+    }
+    
+    private void generateCombinationsHelper(Set<Integer> current, int start, int n, int r, List<Set<Integer>> result) {
+        if (current.size() == r) {
+            result.add(new HashSet<>(current));
             return;
         }
-
-        for (int i = start; i < visited.length; i++) {
-            if (visited[i]) continue;
-
-            visited[i] = true;
-            dfs(visited, i, depth + 1, end, relation);
-            visited[i] = false;
+        
+        for (int i = start; i < n; i++) {
+            current.add(i);
+            generateCombinationsHelper(current, i+ 1, n, r, result);
+            current.remove(i);
         }
-
     }
 }
