@@ -4,7 +4,6 @@ class Solution {
     public int solution(String s) {
         int answer = 0;
         String extendedS = s + s;
-        
         for (int i = 0; i < s.length(); i++) {
             if (isValid(extendedS.substring(i, s.length() + i))) answer++;
         }
@@ -31,6 +30,7 @@ class Solution {
                 }
             }
         }
+        
         return queue.isEmpty();
     }
 }
