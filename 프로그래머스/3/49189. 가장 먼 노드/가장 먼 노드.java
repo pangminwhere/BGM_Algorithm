@@ -1,5 +1,4 @@
 import java.util.*;
-
 class Solution {
     public int solution(int n, int[][] edge) {
         Map<Integer, List<Integer>> graph = new HashMap<>();
@@ -13,14 +12,14 @@ class Solution {
             graph.get(e[1]).add(e[0]);
         }
         
-        boolean[] visited = new boolean[n + 1];
         Queue<int[]> queue = new ArrayDeque<>();
+        boolean[] visited = new boolean[n+1];
         queue.add(new int[]{1, 0});
         visited[1] = true;
         
         int maxDist = 0, count = 0;
-        while (!queue.isEmpty()) {
-            int[] curr = queue.poll();
+        while(!queue.isEmpty()) {
+            int[] curr = queue.remove();
             
             if (maxDist < curr[1]) {
                 maxDist = curr[1];
