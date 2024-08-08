@@ -12,14 +12,14 @@ class Solution {
             graph.get(e[1]).add(e[0]);
         }
         
-        Queue<int[]> queue = new ArrayDeque<>();
-        boolean[] visited = new boolean[n+1];
-        queue.add(new int[]{1, 0});
+        boolean[] visited = new boolean[n + 1];
+        Queue<int[]> que = new ArrayDeque<>();
+        que.add(new int[]{1, 0});
         visited[1] = true;
         
         int maxDist = 0, count = 0;
-        while(!queue.isEmpty()) {
-            int[] curr = queue.remove();
+        while (!que.isEmpty()) {
+            int[] curr = que.remove();
             
             if (maxDist < curr[1]) {
                 maxDist = curr[1];
@@ -31,7 +31,7 @@ class Solution {
             for (int next : graph.get(curr[0])) {
                 if (visited[next]) continue;
                 visited[next] = true;
-                queue.add(new int[]{next, curr[1] + 1});
+                que.add(new int[] {next, curr[1] + 1});
             }
         }
         return count;
