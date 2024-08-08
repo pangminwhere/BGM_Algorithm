@@ -2,48 +2,37 @@ import java.util.*;
 
 class Solution {
     public int solution(int[] queue1, int[] queue2) {
-        long sum1 = 0, sum2 = 0;
-        Queue<Integer> q1 = new LinkedList<>();
-        Queue<Integer> q2 = new LinkedList<>();
+        int answer = 0;
+        int n = queue1.length;
+        long q1Sum = 0, q2Sum = 0;
         
-        // 큐 초기화 및 합계 계산
-        for (int i = 0; i < queue1.length; i++) {
+        Queue<Integer> q1 = new ArrayDeque<>();
+        Queue<Integer> q2 = new ArrayDeque<>();
+        
+        for (int i = 0; i < n; i++) {
             q1.add(queue1[i]);
-            sum1 += queue1[i];
+            q1Sum += queue1[i];
             q2.add(queue2[i]);
-            sum2 += queue2[i];
+            q2Sum += queue2[i];
         }
         
-        // 두 큐의 합이 같아야 할 목표 합계
-        long target = (sum1 + sum2) / 2;
-        
-        // 두 큐의 합이 홀수인 경우 균등하게 나눌 수 없으므로 -1 반환
-        if ((sum1 + sum2) % 2 != 0){
-            return -1;
-        } 
-        
-        int count = 0;
-        int maxOperations = queue1.length * 3; // 최대 작업 횟수 제한
-        
-        while (count < maxOperations) {
-            if (sum1 == target) {
-                return count;
-            }
-            
-            if (sum1 > target) {
-                int value = q1.poll();
-                sum1 -= value;
-                sum2 += value;
-                q2.add(value);
+        for (int i = 0; i < 3 * n; i++) {
+            if (q1Sum == q2Sum) {
+                return answer;
+            } else if (q1Sum > q2Sum) {
+                int a = q1.poll();
+                q1Sum -= a;
+                q2Sum += a;
+                q2.add(a);
+                answer++;
             } else {
-                int value = q2.poll();
-                sum2 -= value;
-                sum1 += value;
-                q1.add(value);
+                int b = q2.poll();
+                q1Sum += b;
+                q2Sum -= b;
+                q1.add(b);
+                answer++;
             }
-            count++;
         }
-        
         return -1;
     }
 }
