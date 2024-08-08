@@ -1,52 +1,68 @@
 import java.util.*;
 
 class Solution {
-    static int[] dx = {-1, 0, 1, 0};
-    static int[] dy = {0, 1, 0, -1};
-    static boolean[][] visit;
-    
-    static int[] answer;
-    
-    public void dfs(int num, int x, int y, int count, String[] places) {
-        if (count > 2) return;
-        if (count > 0 && count <= 2 && places[x].charAt(y) == 'P') {
-            answer[num] = 0;
-            return;
-        }
+    class Pair {
+        int x, y, count;
         
-        for (int i = 0; i < 4; i++) {
-            int nx = x + dx[i];
-            int ny = y + dy[i];
-            
-            if (nx >= 0 && nx < 5 && ny >= 0 && ny < 5 && places[nx].charAt(ny) != 'X') {
-               if (visit[nx][ny]) {
-                   continue;
-               } 
-                visit[nx][ny] = true;
-                dfs(num, nx, ny, count + 1, places);
-                visit[nx][ny] = false;
-            }
+        public Pair(int x, int y, int count) {
+            this.x = x;
+            this.y = y;
+            this.count = count;
         }
     }
     
     public int[] solution(String[][] places) {
-        answer = new int[places.length];
-        for (int i = 0; i < places.length; i++) {
-            answer[i] = 1;
+        int[] answer = new int[places.length];
+        for (int i = 0; i < answer.length; i++) {
+            answer[i] = check(places[i]);
         }
-        
-        for (int i = 0; i < places.length; i++) {
-            visit = new boolean[5][5];
+        return answer;
+    }
+    
+    int check(String[] place) {
+        for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
-                for (int k = 0; k < 5; k++) {
-                    if (places[i][j].charAt(k) == 'P') {
-                        visit[j][k] = true;
-                        dfs(i, j, k, 0, places[i]);
-                        visit[j][k] = false;
+                if (place[i].charAt(j) == 'P') {
+                    if (!bfs(i, j, place)) {
+                        return 0;
                     }
                 }
             }
         }
-        return answer;
+        return 1;
+    }
+    
+    boolean bfs(int i, int j, String[] place) {
+        int[] dx = {0, 1, 0, -1};
+        int[] dy = {1, 0, -1, 0};
+        boolean[][] visited = new boolean[5][5];
+        Queue<Pair> que = new LinkedList<>();
+        que.add(new Pair(i, j, 0));
+        visited[i][j] = true;
+        
+        while (!que.isEmpty()) {
+            Pair pair = que.remove();
+            if (pair.count >= 2) continue;
+            
+            for (int x = 0; x < 4; x++) {
+                int nX = pair.x + dx[x];
+                int nY = pair.y + dy[x];
+                
+                if (inRange(nX, nY) && place[nX].charAt(nY) != 'X') {
+                    if (!visited[nX][nY]) {
+                        if (place[nX].charAt(nY) == 'P') {
+                            return false;
+                        }
+                        que.add(new Pair(nX, nY, pair.count + 1));
+                        visited[nX][nY] = true;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    
+    boolean inRange(int r, int c) {
+        return (r >= 0) && (r < 5) && (c >= 0) && (c < 5);
     }
 }
