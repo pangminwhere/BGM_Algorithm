@@ -1,27 +1,24 @@
 import java.util.*;
-
 class Solution {
     public int[] solution(int[] prices) {
         int[] answer = new int[prices.length];
-        Queue<Integer> q = new ArrayDeque<>();
+        Queue<Integer> queue = new LinkedList<>();
         
         for (int i : prices) {
-            q.add(i);
+            queue.add(i);
         }
+        
         int index = 0;
-        while (!q.isEmpty()) {
-            int curr = q.poll();
+        while (!queue.isEmpty()) {
+            int curr = queue.poll();
             
-            for (int i = (prices.length - q.size()); i < prices.length; i++) {
+            for (int i = (prices.length - queue.size()); i < prices.length; i++) {
                 if (curr > prices[i]) {
                     answer[index]++;
                     break;
-                } 
-                
-                if (curr <= prices[i]) {
+                } else if (curr <= prices[i]) {
                     answer[index]++;
                 }
-                
             }
             index++;
         }
