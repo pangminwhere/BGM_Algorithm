@@ -8,13 +8,12 @@ class Solution {
         int[] dr = {0, 1, 0, -1};
         int[] dc = {1, 0, -1, 0};
         boolean[][] visited = new boolean[n][m];
-        Queue<int[]> queue = new LinkedList<>();
-        
-        queue.add(new int[] {0, 0, 1});
+        Queue<int[]> que = new LinkedList<>();
+        que.add(new int[] {0, 0, 1});
         visited[0][0] = true;
         
-        while (!queue.isEmpty()) {
-            int[] curr = queue.remove();
+        while (!que.isEmpty()) {
+            int[] curr = que.remove();
             
             int r = curr[0], c = curr[1], dist = curr[2];
             
@@ -29,10 +28,9 @@ class Solution {
                 if (nr >= 0 && nr < n && nc >= 0 && nc < m && maps[nr][nc] == 1) {
                     if (visited[nr][nc]) continue;
                     visited[nr][nc] = true;
-                    queue.add(new int[]{nr, nc, dist + 1});
+                    que.add(new int[] {nr, nc, dist + 1});
                 }
             }
-            
         }
         return -1;
     }
