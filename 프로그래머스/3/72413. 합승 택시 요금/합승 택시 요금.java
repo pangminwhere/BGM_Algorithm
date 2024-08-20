@@ -1,62 +1,65 @@
 import java.util.*;
-class Edge implements Comparable<Edge> {
-    int node, cost;
-    public Edge(int node, int cost) {
-        this.node = node;
-        this.cost = cost;
-    }
-    @Override
-    public int compareTo(Edge other) {
-        return Integer.compare(this.cost, other.cost);
-    }
-}
+
 class Solution {
-    public int solution(int n, int s, int a, int b, int[][] fares) {
-        // 그래프 초기화
-        Map<Integer, List<Edge>> graph = new HashMap<>();
-        for (int[] fare : fares) {
-            int u = fare[0];
-            int v = fare[1];
-            int w = fare[2];
-            graph.putIfAbsent(u, new ArrayList<>());
-            graph.get(u).add(new Edge(v, w));
-            graph.putIfAbsent(v, new ArrayList<>());
-            graph.get(v).add(new Edge(u, w));
+    class Edge implements Comparable<Edge> {
+        int node;
+        int cost;
+        
+        public Edge(int node, int cost) {
+            this.node = node;
+            this.cost = cost;
         }
-        // 다익스트라 알고리즘을 사용하여 최단 거리 계산
-        int[] distFromS = dijkstra(graph, s, n);
-        int[] distFromA = dijkstra(graph, a, n);
-        int[] distFromB = dijkstra(graph, b, n);
-        // 최소 비용 계산
-        int minCost = Integer.MAX_VALUE;
-        for (int i = 1; i <= n; i++) {
-            if (distFromS[i] != Integer.MAX_VALUE && distFromA[i] != Integer.MAX_VALUE && distFromB[i] != Integer.MAX_VALUE) {
-                int cost = distFromS[i] + distFromA[i] + distFromB[i];
-                minCost = Math.min(minCost, cost);
-            }
+        
+        @Override
+        public int compareTo(Edge next) {
+            return Integer.compare(this.cost, next.cost);
         }
-        return minCost;
     }
-    private int[] dijkstra(Map<Integer, List<Edge>> graph, int start, int n) {
-        int INF = Integer.MAX_VALUE;
-        int[] distance = new int[n + 1];
-        Arrays.fill(distance, INF);
-        PriorityQueue<Edge> pq = new PriorityQueue<>();
-        pq.add(new Edge(start, 0));
+    
+    
+    public int solution(int n, int s, int a, int b, int[][] fares) {
+        int answer = Integer.MAX_VALUE;
+        Map<Integer, List<Edge>> graph = new HashMap<>();
+        
+        for (int i = 1; i <= n; i++) {
+            graph.put(i, new ArrayList());
+        }
+        
+        for (int[] next : fares) {
+            graph.get(next[0]).add(new Edge(next[1], next[2]));
+            graph.get(next[1]).add(new Edge(next[0], next[2]));
+        }
+        
+        int[] answerS = dijkstra(graph, s);
+        int[] answerA = dijkstra(graph, a);
+        int[] answerB = dijkstra(graph, b);
+        
+        for (int i = 1; i <= n; i++) {
+            int tmp = answerS[i] + answerA[i] + answerB[i];
+            answer = Math.min(answer, tmp);
+        }
+        return answer;
+    }
+    
+    int[] dijkstra(Map<Integer, List<Edge>> graph, int start) {
+        int n = graph.size();
+        int[] distance = new int[n+1];
+        Arrays.fill(distance, Integer.MAX_VALUE);
+        
+        Queue<Edge> que = new PriorityQueue();
+        que.add(new Edge(start, 0));
         distance[start] = 0;
-        while (!pq.isEmpty()) {
-            Edge cur = pq.poll();
-            if (distance[cur.node] < cur.cost) {
-                continue;
-            }
-            List<Edge> edges = graph.get(cur.node);
-            if (edges != null) {
-                for (Edge next : edges) {
-                    int nextCost = distance[cur.node] + next.cost;
-                    if (nextCost < distance[next.node]) {
-                        distance[next.node] = nextCost;
-                        pq.add(new Edge(next.node, nextCost));
-                    }
+        
+        while(!que.isEmpty()) {
+            Edge edge = que.remove();
+            
+            if (distance[edge.node] < edge.cost) continue;
+            
+            for (Edge next : graph.get(edge.node)) {
+                int nextCost = distance[edge.node] + next.cost;
+                if (distance[next.node] > nextCost) {
+                    distance[next.node] = nextCost;
+                    que.add(new Edge(next.node, nextCost));
                 }
             }
         }
