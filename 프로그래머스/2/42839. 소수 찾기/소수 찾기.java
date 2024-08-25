@@ -1,13 +1,14 @@
 import java.util.*;
 
 class Solution {
-    Set<Integer> candi = new HashSet<>();
+    Set<Integer> candidates = new HashSet<>();
+    
     public int solution(String numbers) {
-        int answer = 0;
-        boolean[] visited = new boolean[numbers.length()];
-        permutation(numbers, 0, visited, 0);
+        permutation(numbers, 0, new boolean[numbers.length()], 0);
         
-        for (int num : candi) {
+        int answer = 0;
+        
+        for (int num : candidates) {
             if (isPrime(num)) answer++;
         }
         
@@ -21,7 +22,8 @@ class Solution {
             if (visited[i]) continue;
             
             int newValue = current + (int)((numbers.charAt(i) - '0') * Math.pow(10, digit));
-            candi.add(newValue);
+            
+            candidates.add(newValue);
             
             visited[i] = true;
             permutation(numbers, newValue, visited, digit + 1);
