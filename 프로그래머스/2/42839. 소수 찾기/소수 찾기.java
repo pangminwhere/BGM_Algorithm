@@ -7,9 +7,10 @@ class Solution {
         permutation(numbers, 0, new boolean[numbers.length()], 0);
         
         int answer = 0;
-        for (int num : candidates) {
-            if (isPrime(num)) answer++;
+        for (int i : candidates) {
+            if (isPrime(i)) answer++;
         }
+        
         return answer;
     }
     
