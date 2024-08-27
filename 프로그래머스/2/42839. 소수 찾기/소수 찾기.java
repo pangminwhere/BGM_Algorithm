@@ -7,8 +7,8 @@ class Solution {
         permutation(numbers, 0, new boolean[numbers.length()], 0);
         
         int answer = 0;
-        for (int i : candidates) {
-            if (isPrime(i)) answer++;
+        for (int num : candidates) {
+            if (isPrime(num)) answer++;
         }
         
         return answer;
@@ -19,8 +19,7 @@ class Solution {
         
         for (int i = 0; i < numbers.length(); i++) {
             if (visited[i]) continue;
-            
-            int newValue = curr + (int)((numbers.charAt(i) - '0') * Math.pow(10, digit));
+            int newValue = curr + (int)((numbers.charAt(i) -'0') * Math.pow(10, digit));
             candidates.add(newValue);
             
             visited[i] = true;
@@ -35,7 +34,6 @@ class Solution {
         for (int i = 2; i * i <= n; i++) {
             if (n % i == 0) return false;
         }
-        
         return true;
     }
 }
