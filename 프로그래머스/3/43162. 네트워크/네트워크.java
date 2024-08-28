@@ -5,19 +5,19 @@ class Solution {
         
         for (int i = 0; i < n; i++) {
             if (visited[i]) continue;
-            dfs(n, computers, visited, i);
+            dp(n, computers, visited, i);
             count++;
         }
         
         return count;
     }
     
-    void dfs(int n, int[][] computers, boolean[] visited, int curr) {
+    void dp (int n, int[][] computers, boolean[] visited, int curr) {
         visited[curr] = true;
         
         for (int i = 0; i < n; i++) {
             if (!visited[i] && computers[curr][i] == 1) {
-                dfs(n, computers, visited, i);
+                dp(n, computers, visited, i);
             }
         }
     }
