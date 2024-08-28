@@ -1,9 +1,8 @@
 import java.util.*;
 
 class Solution {
-    int answer;
     public int solution(int n, int[][] wires) {
-        answer = n;
+        int answer = Integer.MAX_VALUE;
         Map<Integer, List<Integer>> graph = new HashMap<>();
         
         for (int i = 1; i <= n; i++) {
@@ -15,24 +14,41 @@ class Solution {
             graph.get(wire[1]).add(wire[0]);
         }
         
-        boolean[] visited = new boolean[n+1];
-        dfs(graph, visited, 1, n);
-        
+        for (int[] wire : wires) {
+            int a = wire[0];
+            int b = wire[1];
+            
+            graph.get(a).remove(Integer.valueOf(b));
+            graph.get(b).remove(Integer.valueOf(a));
+            
+            int cnt1 = bfs(a, graph, n);
+            
+            graph.get(a).add(b);
+            graph.get(b).add(a);
+            
+            int cnt2 = n - cnt1;
+            answer = Math.min(answer, Math.abs(cnt2 - cnt1));
+        }
         return answer;
     }
     
-    int dfs(Map<Integer, List<Integer>> graph, boolean[] visited, int curr, int n) {
+    int bfs(int start, Map<Integer, List<Integer>> graph, int n) {
+        boolean[] visited = new boolean[n + 1];
+        Queue<Integer> que = new LinkedList<>();
+        que.add(start);
+        visited[start] = true;
         int count = 1;
-        visited[curr] = true;
         
-        for (int next : graph.get(curr)) {
-            if (!visited[next]) {
-                count += dfs(graph, visited, next, n);
+        while (!que.isEmpty()) {
+            int curr = que.remove();
+            
+            for (int next : graph.get(curr)) {
+                if (visited[next]) continue;
+                visited[next] = true;
+                que.add(next);
+                count++;
             }
         }
-        
-        answer = Math.min(answer, Math.abs(n - count * 2));
-        
         return count;
     }
 }
