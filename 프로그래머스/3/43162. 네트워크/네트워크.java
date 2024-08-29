@@ -1,15 +1,15 @@
 class Solution {
     public int solution(int n, int[][] computers) {
-        int answer = 0;
+        int count = 0;
         boolean[] visited = new boolean[n];
         
         for (int i = 0; i < n; i++) {
             if (visited[i]) continue;
             dfs(n, computers, visited, i);
-            answer++;
+            count++;
         }
         
-        return answer;
+        return count;
     }
     
     void dfs(int n, int[][] computers, boolean[] visited, int curr) {
