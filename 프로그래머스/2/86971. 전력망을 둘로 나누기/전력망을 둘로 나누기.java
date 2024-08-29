@@ -21,19 +21,21 @@ class Solution {
             graph.get(a).remove(Integer.valueOf(b));
             graph.get(b).remove(Integer.valueOf(a));
             
-            int cnt1 = bfs(a, graph, n);
+            int cnt1 = dfs(a, graph, n);
             
             graph.get(a).add(b);
             graph.get(b).add(a);
             
             int cnt2 = n - cnt1;
+            
             answer = Math.min(answer, Math.abs(cnt2 - cnt1));
         }
         return answer;
     }
     
-    public int bfs(int start, Map<Integer, List<Integer>> graph, int n) {
-        boolean[] visited = new boolean[n + 1];
+    int dfs(int start, Map<Integer, List<Integer>> graph, int n) {
+        boolean[] visited = new boolean[n+1];
+        
         Queue<Integer> que = new LinkedList<>();
         que.add(start);
         visited[start] = true;
@@ -41,6 +43,7 @@ class Solution {
         
         while(!que.isEmpty()) {
             int curr = que.poll();
+            
             for (int next : graph.get(curr)) {
                 if (!visited[next]) {
                     que.add(next);
@@ -49,6 +52,7 @@ class Solution {
                 }
             }
         }
+        
         return count;
     }
 }
