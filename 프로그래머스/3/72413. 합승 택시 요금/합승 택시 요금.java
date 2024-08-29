@@ -1,26 +1,25 @@
 import java.util.*;
-
 class Edge implements Comparable<Edge> {
-    int node, cost;
-    
-    public Edge(int node, int cost) {
-        this.node = node;
-        this.cost = cost;
-    }
-    
-    @Override
-    public int compareTo(Edge o) {
-        return Integer.compare(this.cost, o.cost);
-    }
+        int node, cost;
+        
+        public Edge(int node, int cost) {
+            this.node = node;
+            this.cost = cost;
+        }
+        
+        @Override
+        public int compareTo(Edge o) {
+            return Integer.compare(this.cost, o.cost);
+        }
 }
 
 class Solution {
     public int solution(int n, int s, int a, int b, int[][] fares) {
-        Map<Integer, List<Edge>> graph = new HashMap<>();
         int answer = Integer.MAX_VALUE;
+        Map<Integer, List<Edge>> graph = new HashMap<>();
         
         for (int i = 1; i <= n; i++) {
-            graph.put(i, new ArrayList<>());
+            graph.put(i, new ArrayList<>());    
         }
         
         for (int[] fare : fares) {
@@ -34,8 +33,9 @@ class Solution {
         
         for (int i = 1; i <= n; i++) {
             int tmp = answerS[i] + answerA[i] + answerB[i];
-            answer = Math.min(tmp, answer);
+            answer = Math.min(answer, tmp);
         }
+        
         return answer;
     }
     
@@ -61,6 +61,7 @@ class Solution {
                     distance[next.node] = nextCost;
                 }
             }
+            
         }
         return distance;
     }
