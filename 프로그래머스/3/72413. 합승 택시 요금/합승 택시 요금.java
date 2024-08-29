@@ -1,23 +1,23 @@
 import java.util.*;
 
-class Solution {
-    class Edge implements Comparable<Edge> {
-        int node;
-        int cost;
-        
-        public Edge(int node, int cost) {
-            this.node = node;
-            this.cost = cost;
-        }
-        
-        @Override
-        public int compareTo(Edge o) {
-            return Integer.compare(this.cost, o.cost);
-        }
+class Edge implements Comparable<Edge> {
+    int node, cost;
+    
+    public Edge(int node, int cost) {
+        this.node = node;
+        this.cost = cost;
     }
+    
+    @Override
+    public int compareTo(Edge o) {
+        return Integer.compare(this.cost, o.cost);
+    }
+}
+
+class Solution {
     public int solution(int n, int s, int a, int b, int[][] fares) {
-        int answer= Integer.MAX_VALUE;
         Map<Integer, List<Edge>> graph = new HashMap<>();
+        int answer = Integer.MAX_VALUE;
         
         for (int i = 1; i <= n; i++) {
             graph.put(i, new ArrayList<>());
@@ -32,7 +32,7 @@ class Solution {
         int[] answerA = dijkstra(graph, a);
         int[] answerB = dijkstra(graph, b);
         
-        for (int i = 1; i <= n; i++) { 
+        for (int i = 1; i <= n; i++) {
             int tmp = answerS[i] + answerA[i] + answerB[i];
             answer = Math.min(tmp, answer);
         }
@@ -52,8 +52,10 @@ class Solution {
             Edge curr = pq.remove();
             
             if (distance[curr.node] < curr.cost) continue;
+            
             for (Edge next : graph.get(curr.node)) {
                 int nextCost = distance[curr.node] + next.cost;
+                
                 if (distance[next.node] > nextCost) {
                     pq.add(new Edge(next.node, nextCost));
                     distance[next.node] = nextCost;
