@@ -1,5 +1,4 @@
 import java.util.*;
-
 class Solution {
     public int solution(int n, int[][] wires) {
         int answer = Integer.MAX_VALUE;
@@ -34,14 +33,13 @@ class Solution {
     }
     
     int dfs(int start, Map<Integer, List<Integer>> graph, int n) {
-        boolean[] visited = new boolean[n+1];
-        
+        boolean[] visited = new boolean[n + 1];
         Queue<Integer> que = new LinkedList<>();
         que.add(start);
         visited[start] = true;
         int count = 1;
         
-        while(!que.isEmpty()) {
+        while (!que.isEmpty()) {
             int curr = que.poll();
             
             for (int next : graph.get(curr)) {
@@ -49,10 +47,9 @@ class Solution {
                     que.add(next);
                     visited[next] = true;
                     count++;
-                }
+                } 
             }
         }
-        
         return count;
     }
 }
